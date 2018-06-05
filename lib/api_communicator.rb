@@ -2,11 +2,11 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
-def get_character_movies_from_api(character)
+def get_character_movies_from_api(character, page_num = 1)
   #make the web request
-  count = 1
+  new_page_num = page_num
 
-  first_page = RestClient.get('http://www.swapi.co/api/people/?page=' + count.to_s)
+  first_page = RestClient.get('http://www.swapi.co/api/people/?page=' + page_num.to_s)
   first_page_hash = JSON.parse(first_page)
 
   # iterate over the character hash to find the collection of `films` for the given
@@ -19,28 +19,18 @@ def get_character_movies_from_api(character)
   #  and that method will do some nice presentation stuff: puts out a list
   #  of movies by title. play around with puts out other info about a given film.
 
-    until first_page_hash["next"] == nil
-
-      first_page = RestClient.get('http://www.swapi.co/api/people/?page=' + count.to_s)
-      first_page_hash = JSON.parse(first_page)
-
-      first_page_hash["results"].each do |object|
-
-        if object["name"].downcase == character
-           get_films_from_api(first_page_hash["films"])
-        
-        else
-          count += 1
-
-        end
-      end
+  first_page_hash["results"].each do |object|
+    if object["name"].downcase == character
+      p "#{object["name"]} FOUND"
+      return get_films_from_api(object["films"])
     end
+  end
+
+    new_page_num += 1
+    p "next page"
+    get_character_movies_from_api(character, new_page_num)
 
 end
-
-# def get_character_hash(character)
-#
-# end
 
 def get_films_from_api(url_film_array)
   film_array = []
@@ -55,8 +45,8 @@ end
 
 def parse_character_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
-  films_hash.each do |film|
-    puts film["title"]
+  films_hash.select do |film|
+    p film["title"]
   end
 end
 

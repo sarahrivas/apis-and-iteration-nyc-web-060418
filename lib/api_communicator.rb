@@ -45,14 +45,15 @@ end
 
 def parse_character_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
+  p "~~~Move Titles~~~"
   films_hash.select do |film|
+
     p film["title"]
   end
 end
 
 def show_character_movies(character)
   films_hash = get_character_movies_from_api(character)
-  parse_character_movies(films_hash)
 end
 
 ## BONUS

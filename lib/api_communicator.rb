@@ -26,9 +26,13 @@ def get_character_movies_from_api(character, page_num = 1)
     end
   end
 
+  if first_page_hash["next"]
     new_page_num += 1
     p "next page"
     get_character_movies_from_api(character, new_page_num)
+  else
+    p "CHARACTER NOT IN DATABASE"
+  end
 
 end
 
